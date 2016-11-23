@@ -11,6 +11,10 @@
 4. `sudo apt-get install -y vim curl git gcc autoconf libtool make build-essential python-dev python-pip python-alsaaudio python-pyalsa python-pyaudio flex bison portaudio19-dev swig libasound2-dev mpg321 memcached`
 5. `pip install -U pip virtualenv numpy pyaudio`
 
+### OSX Setup (so you can develop on your mac)
+
+1. `brew install portaudio`
+
 
 ### Get Credential for Alexa Voice Service
 
