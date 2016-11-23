@@ -63,34 +63,47 @@ def alexa(audio_raw_data):
         ('file', ('audio', audio_raw_data, 'audio/L16; rate=16000; channels=1'))
     ]
     r = requests.post(url, headers=headers, files=files)
+
+    boundary = None
     for v in r.headers['content-type'].split(";"):
         if re.match('.*boundary.*', v):
             boundary =  v.split("=")[1]
 
-    data = r.content.split(boundary)
+
     audio = None
-    for d in data:
-        if (len(d) >= 1024):
-            audio = d.split('\r\n\r\n')[1].rstrip('--')
+    if boundary:
+        data = r.content.split(boundary)
+        for d in data:
+            if (len(d) >= 1024):
+                audio = d.split('\r\n\r\n')[1].rstrip('--')
 
     if audio:
         am.play_mp3(audio)
+        return True
+
+    return False
 
 detector = None
 
-def detected_callback():
+def listen(timeout=0):
     print "... listening ..."
+    raw_audio = am.get_audio(timeout=timeout)
+    print "... thinking ..."
+    alexa_result = alexa(raw_audio)
+    if alexa_result:
+        listen(timeout=20)
+
+def detected_callback(timeout=0):
     snowboydecoder.play_audio_file()
     detector.terminate()
-    raw_audio = am.get_audio()
-    print "... thinking ..."
-    alexa(raw_audio)
 
-    print "Listening again..."
+    listen()
+
     wait_for_hotword()
 
 def wait_for_hotword():
     global detector
+    print "Waiting for hotword..."
     detector = snowboydecoder.HotwordDetector(["models/hey_alexa.pmdl", "models/alexa.pmdl"], sensitivity=0.5, audio_gain=1)
     detector.start(detected_callback)
 
