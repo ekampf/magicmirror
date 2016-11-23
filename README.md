@@ -23,3 +23,9 @@
 
 
 ... TBD ...
+
+
+## Inspired by previous works of...
+
+* https://github.com/alexa-pi/AlexaCHIP
+* https://github.com/nicholasjconn/python-alexa-voice-service
